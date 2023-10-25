@@ -321,6 +321,57 @@ test('#run', { concurrency: true }, async (suite) => {
       { message: /no service name set/ },
     );
   });
+
+  await suite.test('updates a job if job is specified and service is not', async (t) => {
+    const mocks = defaultMocks(t.mock, {
+      service: '',
+      job: 'job-name',
+    });
+
+    await run();
+
+    const args = mocks.getExecOutput.mock.calls?.at(0).arguments?.at(1);
+    assertMembers(args, [
+      'run',
+      'jobs',
+      'update',
+      'job-name',
+      '--image',
+      'gcr.io/cloudrun/hello',
+    ]);
+  });
+
+  await suite.test('ignore job if job and service are both specified', async (t) => {
+    const mocks = defaultMocks(t.mock, {
+      service: 'service-name',
+      job: 'job-name',
+    });
+
+    await run();
+
+    const args = mocks.getExecOutput.mock.calls?.at(0).arguments?.at(1);
+    assertMembers(args, ['jobs', 'job-name', '--platform']);
+  });
+
+  await suite.test('creates a job if job is specified and create is true', async (t) => {
+    const mocks = defaultMocks(t.mock, {
+      service: '',
+      job: 'job-name',
+      create: 'true',
+    });
+
+    await run();
+
+    const args = mocks.getExecOutput.mock.calls?.at(0).arguments?.at(1);
+    assertMembers(args, [
+      'run',
+      'jobs',
+      'create',
+      'job-name',
+      '--image',
+      'gcr.io/cloudrun/hello',
+    ]);
+  });
 });
 
 test('#kvToString', { concurrency: true }, async (suite) => {

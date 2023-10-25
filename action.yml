@@ -30,6 +30,18 @@ inputs:
       Required if not using a service YAML.
     required: false
 
+  job:
+    description: |-
+      ID of the job or fully qualified identifier for the job.
+      Required if not using a service YAML.
+    required: false
+
+  create:
+    description: |-
+      True to create the job instead of updating it.
+    required: false
+    default: false
+
   region:
     description: |-
       Region in which the resource can be found.
